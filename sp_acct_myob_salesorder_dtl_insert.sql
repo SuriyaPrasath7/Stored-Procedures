@@ -30,7 +30,8 @@ ALTER PROCEDURE [dbo].[sp_acct_myob_salesorder_dtl_insert]
     @department INT = NULL,
     @project_no NVARCHAR(30) = NULL,
 	@hod_userid INT = NULL,
-	@sub_dept_id INT = NULL
+	@sub_dept_id INT = NULL,
+	@hubspot_sku_mapping_id INT = NULL
 )
 AS
 BEGIN
@@ -151,7 +152,8 @@ BEGIN
             project_no = @project_no,
 		hod_userid = @hod_userid,
 		hod_user_sub_dept = dbo.fn_acct_get_hod_user_sub_dept(@hod_userid),
-		sub_dept_id = @sub_dept_id
+		sub_dept_id = @sub_dept_id,
+		hubspot_sku_mapping_id = @hubspot_sku_mapping_id
         WHERE trx_id = @trx_id
               AND LTRIM(RTRIM(CONVERT(NVARCHAR(50), trx_uid))) = LTRIM(RTRIM(CONVERT(NVARCHAR(50), @trx_uid)))
               AND @ItemId > 0
@@ -190,7 +192,8 @@ BEGIN
             project_no,
 		hod_userid,
 		hod_user_sub_dept,
-		sub_dept_id
+		sub_dept_id,
+        hubspot_sku_mapping_id
         )
         SELECT @trx_id,
                @sno,
@@ -218,7 +221,8 @@ BEGIN
                @project_no,
 		   @hod_userid,
 		   dbo.fn_acct_get_hod_user_sub_dept(@hod_userid),
-		   @sub_dept_id
+		   @sub_dept_id,
+           @hubspot_sku_mapping_id
 
 
         SELECT @Insert_Error = @@ERROR
