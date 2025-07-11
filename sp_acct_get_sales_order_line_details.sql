@@ -46,7 +46,8 @@ BEGIN
         department INT,
         project_no NVARCHAR(25),
 		hod_userid INT,
-		sub_dept_id INT
+		sub_dept_id INT,
+        hubspot_sku_mapping_id INT
     )
 
     DECLARE @RowCount INT,
@@ -87,7 +88,8 @@ BEGIN
            department,
            project_no,
 		   CASE WHEN ISNULL(hod_userid, 0) <= 0 THEN -1 ELSE hod_userid END hod_userid,
-		   CASE WHEN ISNULL(sub_dept_id, 0) <= 0 THEN -1 ELSE sub_dept_id END sub_dept_id
+		   CASE WHEN ISNULL(sub_dept_id, 0) <= 0 THEN -1 ELSE sub_dept_id END sub_dept_id,
+           hubspot_sku_mapping_id
     FROM myob_salesorder_dtl a (NOLOCK)
     WHERE trx_id = @trx_id
     ORDER BY sno
@@ -124,7 +126,8 @@ BEGIN
                0,
                NULL,
 			   - 1,
-			   -1 
+			   -1,
+               -1
 
         SELECT @RowCount = @RowCount + 1
 
