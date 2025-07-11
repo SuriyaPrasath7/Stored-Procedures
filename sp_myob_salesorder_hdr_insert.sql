@@ -29,7 +29,8 @@ ALTER PROCEDURE [dbo].[sp_myob_salesorder_hdr_insert_backup_11Jul2025]
     @is_include_terms bit = NULL,
     @invoice_type INT = NULL,
     @sales_term NVARCHAR(25) = NULL,
-    @PlaceOfSupply nvarchar(max) = null
+    @PlaceOfSupply nvarchar(max) = null,
+    @hubspot_deal_id NVARCHAR(255) = NULL
 )
 AS
 BEGIN
@@ -40,7 +41,13 @@ BEGIN
             @Insert_Error INT,
             @invoice_date DATETIME,
             @Customer_PO NVARCHAR(16),
-            @invoice_no NVARCHAR(15)
+            @invoice_no NVARCHAR(15),
+            @subsystemrelationshipid INT,
+            @sourcesystemvalue NVARCHAR(255),
+            @targetsystemvalue NVARCHAR(255)
+
+	SELECT @subsystemrelationshipid = 2
+	SELECT @sourcesystemvalue = UPPER(LTRIM(RTRIM(@hubspot_deal_id)))
 
 
     IF @dt_invoice_date is null
@@ -157,6 +164,11 @@ BEGIN
 
     IF (@Insert_Error = 0)
     BEGIN
+
+         SELECT @targetsystemvalue = CONVERT(NVARCHAR(255), @trx_id)
+
+         EXEC rikvin.dbo.sp_subsystemdata_insert_update @subsystemrelationshipid, @sourcesystemvalue, @targetsystemvalue, @Userid
+         
         SELECT @trx_id
         COMMIT TRAN
     END
